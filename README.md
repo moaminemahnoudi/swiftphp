@@ -4,6 +4,8 @@ Modern PHP framework with an expressive router, a simple ORM, built-in authentic
 
 > SwiftPHP targets PHP 8+ and PSR-12 coding style. It’s ideal for small to medium apps, dashboards, APIs, and admin tools.
 
+Repository: https://github.com/moaminemahnoudi/swiftphp
+
 ---
 
 ## Features

@@ -23,7 +23,7 @@ git add .
 git commit -m "Initial release v1.0.0"
 
 # Add remote repository
-git remote add origin https://github.com/YOUR_USERNAME/swiftphp-installer.git
+git remote add origin https://github.com/moaminemahnoudi/swiftphp.git
 git branch -M main
 git push -u origin main
 ```
@@ -41,7 +41,7 @@ git push origin v1.0.0
 1. Go to https://packagist.org
 2. Sign in with GitHub account
 3. Click "Submit"
-4. Enter repository URL: `https://github.com/YOUR_USERNAME/swiftphp-installer`
+4. Enter repository URL: `https://github.com/moaminemahnoudi/swiftphp`
 5. Click "Check" to validate
 6. Click "Submit" to publish
 
