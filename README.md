@@ -40,8 +40,8 @@ You can install globally (installer) or scaffold directly from source.
 Once published:
 
 ```powershell
-composer global require swiftphp/installer
-composer create-project swiftphp/installer my-app
+composer global require swiftphp.ma/installer
+composer create-project swiftphp.ma/installer my-app
 ```
 
 ### From Source (this repository)

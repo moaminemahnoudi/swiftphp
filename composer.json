@@ -1,5 +1,5 @@
 {
-    "name": "swiftphp/installer",
+    "name": "swiftphp.ma/installer",
     "description": "Modern PHP framework with AI-powered CLI, built-in auth, multi-tenant support, and 70% less code",
     "type": "library",
     "keywords": [

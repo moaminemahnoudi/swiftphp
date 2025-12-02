@@ -103,13 +103,13 @@ Packagist will automatically detect the new tag and update the package.
 Once published, users can install with:
 
 ```bash
-composer global require swiftphp/installer
+composer global require swiftphp.ma/installer
 ```
 
 Or create new project with:
 
 ```bash
-composer create-project swiftphp/installer my-app
+composer create-project swiftphp.ma/installer my-app
 ```
 
 ## 🌐 Additional Distribution
