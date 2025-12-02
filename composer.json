@@ -1,0 +1,45 @@
+{
+    "name": "swiftphp/installer",
+    "description": "Modern PHP framework with AI-powered CLI, built-in auth, multi-tenant support, and 70% less code",
+    "type": "library",
+    "keywords": [
+        "framework",
+        "php",
+        "mvc",
+        "router",
+        "orm",
+        "validation",
+        "authentication",
+        "multi-tenant",
+        "ai",
+        "genai",
+        "export",
+        "collections",
+        "middleware"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "SwiftPHP Team",
+            "email": "team@swiftphp.dev"
+        }
+    ],
+    "require": {
+        "php": ">=8.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "SwiftPHP\\": "src/",
+            "App\\": "app/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "scripts": {
+        "serve": "php -S localhost:8000 -t public"
+    },
+    "bin": ["bin/swiftphp"],
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
