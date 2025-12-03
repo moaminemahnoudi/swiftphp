@@ -1,0 +1,36 @@
+# Dependencies
+/vendor/
+/node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Storage
+/storage/logs/*.log
+/storage/views/*.php
+!/storage/logs/.gitkeep
+!/storage/views/.gitkeep
+
+# Cache
+.php-cs-fixer.cache
+.phpunit.result.cache
+
+# Build
+/build/
+/dist/
+
+# Testing
+/coverage/
