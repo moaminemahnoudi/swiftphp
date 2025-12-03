@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Console\Commands;
 
 class MakeModelCommand
@@ -21,13 +23,13 @@ class MakeModelCommand
         }
 
         $template = $this->getModelTemplate($modelName);
-        
+
         if (!is_dir('app/Models')) {
             mkdir('app/Models', 0755, true);
         }
 
         file_put_contents($modelPath, $template);
-        
+
         echo "\033[32mModel '$modelName' created successfully!\033[0m\n";
         echo "Location: $modelPath\n";
     }
@@ -35,7 +37,7 @@ class MakeModelCommand
     private function getModelTemplate(string $name): string
     {
         $tableName = strtolower($name) . 's';
-        
+
         return "<?php
 
 namespace App\\Models;

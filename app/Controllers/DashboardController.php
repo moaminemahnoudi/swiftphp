@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use SwiftPHP\Core\Controller;
 use SwiftPHP\Auth\Auth;
+use SwiftPHP\Core\Controller;
 
 class DashboardController extends Controller
 {

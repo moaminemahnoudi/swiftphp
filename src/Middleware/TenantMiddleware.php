@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Middleware;
 
 use SwiftPHP\Auth\{Auth, Tenant};
@@ -14,7 +16,7 @@ class TenantMiddleware implements Middleware
         }
 
         $tenantId = Auth::tenantId();
-        
+
         if ($tenantId === null) {
             http_response_code(403);
             return json(['error' => 'No tenant assigned'], 403);

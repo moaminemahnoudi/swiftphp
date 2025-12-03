@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Http;
 
 class Request
@@ -18,7 +20,7 @@ class Request
         $this->server = $_SERVER;
         $this->files = $_FILES;
         $this->cookies = $_COOKIE;
-        
+
         if ($this->isJson()) {
             $this->json = json_decode(file_get_contents('php://input'), true);
         }

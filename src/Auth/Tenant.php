@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Auth;
 
 class Tenant
@@ -9,11 +11,11 @@ class Tenant
     public static function set(int $tenantId): void
     {
         self::$currentTenantId = $tenantId;
-        
+
         if (!isset($_SESSION)) {
             session_start();
         }
-        
+
         $_SESSION['tenant_id'] = $tenantId;
     }
 
@@ -34,19 +36,19 @@ class Tenant
     public static function clear(): void
     {
         self::$currentTenantId = null;
-        
+
         if (!isset($_SESSION)) {
             session_start();
         }
-        
+
         unset($_SESSION['tenant_id']);
     }
 
     public static function scope(callable $callback)
     {
-        return function() use ($callback) {
+        return function () use ($callback) {
             $tenantId = self::get();
-            
+
             if ($tenantId === null) {
                 return $callback();
             }

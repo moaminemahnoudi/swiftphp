@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Console\Commands;
 
 use SwiftPHP\Console\Command;
@@ -13,9 +15,9 @@ class GenerateCommand extends Command
     {
         $this->info("🤖 SwiftPHP AI Code Generator");
         $this->line("");
-        
+
         $description = $this->ask("What would you like to generate? (describe in plain English)");
-        
+
         if (empty($description)) {
             $this->error("❌ Description cannot be empty");
             return 1;
@@ -23,27 +25,27 @@ class GenerateCommand extends Command
 
         $this->line("");
         $this->info("🧠 Analyzing your request...");
-        
+
         // Analyze what to generate
         $analysis = $this->analyzeRequest($description);
-        
+
         $this->line("");
         $this->success("✨ I understood:");
         foreach ($analysis['components'] as $component) {
             $this->line("  → {$component['type']}: {$component['name']}");
         }
-        
+
         $this->line("");
         $confirm = $this->confirm("Generate these files?");
-        
+
         if (!$confirm) {
             $this->warning("⚠️  Generation cancelled");
             return 0;
         }
-        
+
         $this->line("");
         $this->info("🚀 Generating code...");
-        
+
         $generated = [];
         foreach ($analysis['components'] as $component) {
             $file = $this->generateComponent($component, $analysis);
@@ -52,10 +54,10 @@ class GenerateCommand extends Command
                 $this->success("  ✓ Created: {$file}");
             }
         }
-        
+
         $this->line("");
         $this->success("🎉 Generated {count} file(s) successfully!", ['count' => count($generated)]);
-        
+
         // Show next steps
         if (!empty($analysis['next_steps'])) {
             $this->line("");
@@ -64,7 +66,7 @@ class GenerateCommand extends Command
                 $this->line("  {$step}");
             }
         }
-        
+
         return 0;
     }
 
@@ -79,10 +81,10 @@ class GenerateCommand extends Command
             'has_validation' => false,
             'relationships' => []
         ];
-        
+
         // Detect entity/resource name
         $entityName = $this->extractEntityName($description);
-        
+
         // Detect what to generate
         $patterns = [
             'controller' => ['/controller/', '/crud/', '/resource/', '/endpoints?/', '/routes?/'],
@@ -91,7 +93,7 @@ class GenerateCommand extends Command
             'test' => ['/test/', '/testing/', '/spec/'],
             'view' => ['/view/', '/page/', '/form/', '/ui/'],
         ];
-        
+
         // Check patterns
         $shouldGenerate = [];
         foreach ($patterns as $type => $typePatterns) {
@@ -102,39 +104,39 @@ class GenerateCommand extends Command
                 }
             }
         }
-        
+
         // If CRUD mentioned, generate all
         if (preg_match('/crud|resource|scaffold/', $description)) {
             $shouldGenerate = array_fill_keys(['controller', 'model', 'migration', 'view'], true);
             $context['has_crud'] = true;
         }
-        
+
         // Default to controller + model if nothing specific
         if (empty($shouldGenerate)) {
             $shouldGenerate = ['controller' => true, 'model' => true];
         }
-        
+
         // Detect features
         if (preg_match('/auth|login|register|protected/', $description)) {
             $context['has_auth'] = true;
         }
-        
+
         if (preg_match('/api|json|rest/', $description)) {
             $context['has_api'] = true;
         }
-        
+
         if (preg_match('/validat/', $description)) {
             $context['has_validation'] = true;
         }
-        
+
         // Detect relationships
         if (preg_match('/belongs? to|has many|has one/i', $description, $matches)) {
             $context['relationships'][] = $matches[0];
         }
-        
+
         // Extract fields
         $fields = $this->extractFields($description);
-        
+
         // Build components list
         if (isset($shouldGenerate['model'])) {
             $components[] = [
@@ -144,7 +146,7 @@ class GenerateCommand extends Command
                 'relationships' => $context['relationships']
             ];
         }
-        
+
         if (isset($shouldGenerate['migration'])) {
             $components[] = [
                 'type' => 'Migration',
@@ -152,7 +154,7 @@ class GenerateCommand extends Command
                 'fields' => $fields
             ];
         }
-        
+
         if (isset($shouldGenerate['controller'])) {
             $components[] = [
                 'type' => 'Controller',
@@ -164,7 +166,7 @@ class GenerateCommand extends Command
                 'fields' => $fields
             ];
         }
-        
+
         if (isset($shouldGenerate['view']) && !$context['has_api']) {
             $components[] = [
                 'type' => 'Views',
@@ -172,7 +174,7 @@ class GenerateCommand extends Command
                 'fields' => $fields
             ];
         }
-        
+
         if (isset($shouldGenerate['test'])) {
             $components[] = [
                 'type' => 'Test',
@@ -180,7 +182,7 @@ class GenerateCommand extends Command
                 'fields' => $fields
             ];
         }
-        
+
         // Next steps
         $next_steps = [];
         if (isset($shouldGenerate['migration'])) {
@@ -193,7 +195,7 @@ class GenerateCommand extends Command
         if (isset($shouldGenerate['test'])) {
             $next_steps[] = "3. Run tests: vendor/bin/phpunit";
         }
-        
+
         return [
             'entity' => $entityName,
             'components' => $components,
@@ -208,20 +210,20 @@ class GenerateCommand extends Command
         if (preg_match('/\b([A-Z][a-z]+(?:[A-Z][a-z]+)*)\b/', $description, $matches)) {
             return $matches[1];
         }
-        
+
         // Common patterns
         $patterns = [
             '/(?:for|a|an|the) (\w+) (?:controller|model|resource)/' => 1,
             '/(\w+) (?:crud|resource|management)/' => 1,
             '/manage (\w+)s?/' => 1,
         ];
-        
+
         foreach ($patterns as $pattern => $group) {
             if (preg_match($pattern, $description, $matches)) {
                 return ucfirst($matches[$group]);
             }
         }
-        
+
         // Ask user
         return ucfirst($this->ask("What is the main entity/resource name? (e.g., Post, User, Product)"));
     }
@@ -229,24 +231,26 @@ class GenerateCommand extends Command
     protected function extractFields(string $description): array
     {
         $fields = [];
-        
+
         // Common field patterns
         $fieldPatterns = [
             '/with (?:fields? )?([^.]+)/' => 1,
             '/has ([^.]+) fields?/' => 1,
             '/columns?: ([^.]+)/' => 1,
         ];
-        
+
         foreach ($fieldPatterns as $pattern => $group) {
             if (preg_match($pattern, $description, $matches)) {
                 $fieldStr = $matches[$group];
                 // Split by comma, and, &
                 $fieldNames = preg_split('/[,&]| and /', $fieldStr);
-                
+
                 foreach ($fieldNames as $fieldName) {
                     $fieldName = trim($fieldName);
-                    if (empty($fieldName)) continue;
-                    
+                    if (empty($fieldName)) {
+                        continue;
+                    }
+
                     // Detect type from name
                     $type = $this->guessFieldType($fieldName);
                     $fields[] = [
@@ -257,7 +261,7 @@ class GenerateCommand extends Command
                 break;
             }
         }
-        
+
         // If no fields found, ask
         if (empty($fields)) {
             $this->line("");
@@ -266,8 +270,10 @@ class GenerateCommand extends Command
                 $fieldNames = explode(',', $fieldsInput);
                 foreach ($fieldNames as $fieldName) {
                     $fieldName = trim($fieldName);
-                    if (empty($fieldName)) continue;
-                    
+                    if (empty($fieldName)) {
+                        continue;
+                    }
+
                     $type = $this->guessFieldType($fieldName);
                     $fields[] = [
                         'name' => $fieldName,
@@ -276,14 +282,14 @@ class GenerateCommand extends Command
                 }
             }
         }
-        
+
         return $fields;
     }
 
     protected function guessFieldType(string $fieldName): string
     {
         $fieldName = strtolower($fieldName);
-        
+
         $typeMap = [
             'id' => 'integer',
             'name' => 'string',
@@ -318,13 +324,13 @@ class GenerateCommand extends Command
             'avatar' => 'string',
             'file' => 'string',
         ];
-        
+
         foreach ($typeMap as $key => $type) {
             if (str_contains($fieldName, $key)) {
                 return $type;
             }
         }
-        
+
         return 'string'; // Default
     }
 
@@ -352,10 +358,10 @@ class GenerateCommand extends Command
         $name = $component['name'];
         $fields = $component['fields'] ?? [];
         $relationships = $component['relationships'] ?? [];
-        
+
         $fillable = array_column($fields, 'name');
         $fillableStr = "'" . implode("', '", $fillable) . "'";
-        
+
         $relationMethods = '';
         if (!empty($relationships)) {
             $relationMethods = "\n\n    // Relationships\n";
@@ -370,7 +376,7 @@ class GenerateCommand extends Command
                 }
             }
         }
-        
+
         $code = "<?php
 
 namespace App\Models;
@@ -389,10 +395,10 @@ class {$name} extends Model
     ];{$relationMethods}
 }
 ";
-        
+
         $path = __DIR__ . "/../../../app/Models/{$name}.php";
         file_put_contents($path, $code);
-        
+
         return "app/Models/{$name}.php";
     }
 
@@ -407,9 +413,9 @@ class {$name} extends Model
         $hasCrud = $component['has_crud'] ?? false;
         $hasAuth = $component['has_auth'] ?? false;
         $hasValidation = $component['has_validation'] ?? false;
-        
+
         $authMiddleware = $hasAuth ? "\n    protected array \$middleware = ['auth'];\n" : "";
-        
+
         $validationRules = '';
         if ($hasValidation && !empty($fields)) {
             $rules = [];
@@ -427,32 +433,32 @@ class {$name} extends Model
             }
             $validationRules = "\n        \$validated = \$request->validate([\n" . implode(",\n", $rules) . "\n        ]);\n";
         }
-        
+
         $returnType = $isApi ? 'json' : 'view';
-        
+
         $methods = '';
         if ($hasCrud) {
             $methods = "
     public function index()
     {
         \${$entityPlural} = {$entity}::all();
-        " . ($isApi 
-            ? "return json(\${$entityPlural});" 
+        " . ($isApi
+            ? "return json(\${$entityPlural});"
             : "return view('{$entityPlural}.index', compact('{$entityPlural}'));") . "
     }
 
     public function create()
     {
-        " . ($isApi 
-            ? "return json(['message' => 'Use POST to create']);" 
+        " . ($isApi
+            ? "return json(['message' => 'Use POST to create']);"
             : "return view('{$entityPlural}.create');") . "
     }
 
     public function store(\$request)
     {{$validationRules}
         \${$entityLower} = {$entity}::create(" . ($hasValidation ? "\$validated" : "\$request->all()") . ");
-        " . ($isApi 
-            ? "return json(\${$entityLower}, 201);" 
+        " . ($isApi
+            ? "return json(\${$entityLower}, 201);"
             : "return redirect('/{$entityPlural}')->with('success', '{$entity} created successfully');") . "
     }
 
@@ -460,12 +466,12 @@ class {$name} extends Model
     {
         \${$entityLower} = {$entity}::find(\$id);
         if (!\${$entityLower}) {
-            " . ($isApi 
-                ? "return json(['error' => 'Not found'], 404);" 
+            " . ($isApi
+                ? "return json(['error' => 'Not found'], 404);"
                 : "abort(404);") . "
         }
-        " . ($isApi 
-            ? "return json(\${$entityLower});" 
+        " . ($isApi
+            ? "return json(\${$entityLower});"
             : "return view('{$entityPlural}.show', compact('{$entityLower}'));") . "
     }
 
@@ -482,13 +488,13 @@ class {$name} extends Model
     {{$validationRules}
         \${$entityLower} = {$entity}::find(\$id);
         if (!\${$entityLower}) {
-            " . ($isApi 
-                ? "return json(['error' => 'Not found'], 404);" 
+            " . ($isApi
+                ? "return json(['error' => 'Not found'], 404);"
                 : "abort(404);") . "
         }
         \${$entityLower}->update(" . ($hasValidation ? "\$validated" : "\$request->all()") . ");
-        " . ($isApi 
-            ? "return json(\${$entityLower});" 
+        " . ($isApi
+            ? "return json(\${$entityLower});"
             : "return redirect('/{$entityPlural}')->with('success', '{$entity} updated successfully');") . "
     }
 
@@ -496,17 +502,17 @@ class {$name} extends Model
     {
         \${$entityLower} = {$entity}::find(\$id);
         if (!\${$entityLower}) {
-            " . ($isApi 
-                ? "return json(['error' => 'Not found'], 404);" 
+            " . ($isApi
+                ? "return json(['error' => 'Not found'], 404);"
                 : "abort(404);") . "
         }
         \${$entityLower}->delete();
-        " . ($isApi 
-            ? "return json(['message' => 'Deleted successfully']);" 
+        " . ($isApi
+            ? "return json(['message' => 'Deleted successfully']);"
             : "return redirect('/{$entityPlural}')->with('success', '{$entity} deleted successfully');") . "
     }";
         }
-        
+
         $code = "<?php
 
 namespace App\Controllers;
@@ -518,10 +524,10 @@ class {$name} extends Controller
 {{$authMiddleware}{$methods}
 }
 ";
-        
+
         $path = __DIR__ . "/../../../app/Controllers/{$name}.php";
         file_put_contents($path, $code);
-        
+
         return "app/Controllers/{$name}.php";
     }
 
@@ -529,10 +535,10 @@ class {$name} extends Controller
     {
         $name = $component['name'];
         $fields = $component['fields'] ?? [];
-        
+
         $timestamp = date('Y_m_d_His');
         $className = 'Create' . str_replace(' ', '', ucwords(str_replace('_', ' ', $name)));
-        
+
         $columns = '';
         foreach ($fields as $field) {
             $type = match($field['type']) {
@@ -546,10 +552,10 @@ class {$name} extends Controller
                 'time' => 'time',
                 default => 'string'
             };
-            
+
             $columns .= "            \$table->{$type}('{$field['name']}');\n";
         }
-        
+
         $code = "<?php
 
 use SwiftPHP\Database\Database;
@@ -574,11 +580,11 @@ return new class {
     }
 };
 ";
-        
+
         $filename = "{$timestamp}_{$name}.php";
         $path = __DIR__ . "/../../../database/migrations/{$filename}";
         file_put_contents($path, $code);
-        
+
         return "database/migrations/{$filename}";
     }
 
@@ -586,12 +592,12 @@ return new class {
     {
         $name = $component['name'];
         $fields = $component['fields'] ?? [];
-        
+
         $dir = __DIR__ . "/../../../resources/views/{$name}";
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
         }
-        
+
         // Index view
         $indexView = "@extends('layouts.app')
 
@@ -628,7 +634,7 @@ return new class {
 @endsection
 ";
         file_put_contents("{$dir}/index.swift.php", $indexView);
-        
+
         // Create view
         $createView = "@extends('layouts.app')
 
@@ -650,7 +656,7 @@ return new class {
 @endsection
 ";
         file_put_contents("{$dir}/create.swift.php", $createView);
-        
+
         return "resources/views/{$name}/*.swift.php";
     }
 
@@ -659,7 +665,7 @@ return new class {
         $name = $component['name'];
         $entity = str_replace('Test', '', $name);
         $entityLower = strtolower($entity);
-        
+
         $code = "<?php
 
 use PHPUnit\Framework\TestCase;
@@ -696,15 +702,15 @@ class {$name} extends TestCase
     }
 }
 ";
-        
+
         $dir = __DIR__ . "/../../../tests";
         if (!is_dir($dir)) {
             mkdir($dir, 0777, true);
         }
-        
+
         $path = "{$dir}/{$name}.php";
         file_put_contents($path, $code);
-        
+
         return "tests/{$name}.php";
     }
 
@@ -716,19 +722,19 @@ class {$name} extends TestCase
             'man' => 'men',
             'woman' => 'women',
         ];
-        
+
         if (isset($irregular[$word])) {
             return $irregular[$word];
         }
-        
+
         if (str_ends_with($word, 'y')) {
             return substr($word, 0, -1) . 'ies';
         }
-        
+
         if (str_ends_with($word, 's') || str_ends_with($word, 'x') || str_ends_with($word, 'z')) {
             return $word . 'es';
         }
-        
+
         return $word . 's';
     }
 }

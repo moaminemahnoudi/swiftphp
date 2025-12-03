@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Security;
 
 class Security
@@ -9,7 +11,7 @@ class Security
         if (!isset($_SESSION)) {
             session_start();
         }
-        
+
         $token = bin2hex(random_bytes(32));
         $_SESSION['csrf_token'] = $token;
         return $token;
@@ -20,7 +22,7 @@ class Security
         if (!isset($_SESSION)) {
             session_start();
         }
-        
+
         return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
     }
 
@@ -32,28 +34,28 @@ class Security
     public static function validate(array $data, array $rules): array
     {
         $errors = [];
-        
+
         foreach ($rules as $field => $rule) {
             $value = $data[$field] ?? null;
-            
+
             if (str_contains($rule, 'required') && empty($value)) {
                 $errors[$field] = "$field is required";
                 continue;
             }
-            
+
             if (str_contains($rule, 'email') && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
                 $errors[$field] = "$field must be a valid email";
             }
-            
+
             if (preg_match('/min:(\d+)/', $rule, $matches) && strlen($value) < $matches[1]) {
                 $errors[$field] = "$field must be at least {$matches[1]} characters";
             }
-            
+
             if (preg_match('/max:(\d+)/', $rule, $matches) && strlen($value) > $matches[1]) {
                 $errors[$field] = "$field must not exceed {$matches[1]} characters";
             }
         }
-        
+
         return $errors;
     }
 

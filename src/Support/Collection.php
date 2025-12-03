@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Support;
 
 class Collection implements \ArrayAccess, \Iterator, \Countable, \JsonSerializable
@@ -55,13 +57,13 @@ class Collection implements \ArrayAccess, \Iterator, \Countable, \JsonSerializab
         if ($callback === null) {
             return $this->items[0] ?? null;
         }
-        
+
         foreach ($this->items as $key => $item) {
             if ($callback($item, $key)) {
                 return $item;
             }
         }
-        
+
         return null;
     }
 
@@ -70,7 +72,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable, \JsonSerializab
         if ($callback === null) {
             return end($this->items) ?: null;
         }
-        
+
         return $this->filter($callback)->last();
     }
 
@@ -97,13 +99,13 @@ class Collection implements \ArrayAccess, \Iterator, \Countable, \JsonSerializab
     public function sort(callable $callback = null): self
     {
         $items = $this->items;
-        
+
         if ($callback) {
             usort($items, $callback);
         } else {
             sort($items);
         }
-        
+
         return new self($items);
     }
 
@@ -112,7 +114,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable, \JsonSerializab
         return $this->sort(function ($a, $b) use ($key, $descending) {
             $aVal = is_array($a) ? ($a[$key] ?? null) : ($a->$key ?? null);
             $bVal = is_array($b) ? ($b[$key] ?? null) : ($b->$key ?? null);
-            
+
             $result = $aVal <=> $bVal;
             return $descending ? -$result : $result;
         });
@@ -121,19 +123,19 @@ class Collection implements \ArrayAccess, \Iterator, \Countable, \JsonSerializab
     public function groupBy(string $key): array
     {
         $grouped = [];
-        
+
         foreach ($this->items as $item) {
             $groupKey = is_array($item) ? ($item[$key] ?? null) : ($item->$key ?? null);
             $grouped[$groupKey][] = $item;
         }
-        
-        return array_map(fn($items) => new self($items), $grouped);
+
+        return array_map(fn ($items) => new self($items), $grouped);
     }
 
     public function chunk(int $size): self
     {
         $chunks = array_chunk($this->items, $size);
-        return new self(array_map(fn($chunk) => new self($chunk), $chunks));
+        return new self(array_map(fn ($chunk) => new self($chunk), $chunks));
     }
 
     public function take(int $limit): self
@@ -166,7 +168,7 @@ class Collection implements \ArrayAccess, \Iterator, \Countable, \JsonSerializab
         if ($key === null) {
             return array_sum($this->items);
         }
-        
+
         return $this->pluck($key)->sum();
     }
 

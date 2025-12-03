@@ -2,10 +2,9 @@
 
 namespace App\Controllers;
 
-use SwiftPHP\Core\Controller;
-use SwiftPHP\Http\{Request, Response};
 use SwiftPHP\Auth\Auth;
-use App\Models\User;
+use SwiftPHP\Core\Controller;
+use SwiftPHP\Http\{Request};
 
 class AuthController extends Controller
 {
@@ -14,7 +13,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return redirect('/dashboard');
         }
-        
+
         return view('auth.login');
     }
 
@@ -39,7 +38,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return redirect('/dashboard');
         }
-        
+
         return view('auth.register');
     }
 

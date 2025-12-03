@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Database;
 
 class QueryBuilder
@@ -39,7 +41,7 @@ class QueryBuilder
         $placeholders = ':' . implode(', :', array_keys($data));
         $this->sql = "INSERT INTO {$this->table} ($columns) VALUES ($placeholders)";
         $this->bindings = array_combine(
-            array_map(fn($key) => ":$key", array_keys($data)),
+            array_map(fn ($key) => ":$key", array_keys($data)),
             array_values($data)
         );
         return $this->execute();

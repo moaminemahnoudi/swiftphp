@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Export;
 
 use SwiftPHP\Support\Collection;
 
 /**
  * SwiftPHP Export System
- * 
+ *
  * Export data to multiple formats: Excel (XLSX), PDF, CSV, JSON
  * Usage: Exporter::make($data)->excel('users.xlsx')
  */
@@ -51,10 +53,10 @@ class Exporter
     public function excel(string $filename = 'export.xlsx'): string
     {
         $xml = $this->generateExcelXML();
-        
+
         // Create temporary file
         $tmpFile = sys_get_temp_dir() . '/' . uniqid() . '.xlsx';
-        
+
         // Simple XLSX structure (ZIP with XML)
         $zip = new \ZipArchive();
         if ($zip->open($tmpFile, \ZipArchive::CREATE) === true) {
@@ -151,7 +153,7 @@ class Exporter
     protected function generateExcelXML(): array
     {
         $headers = $this->headers ?: (!empty($this->data) ? array_keys((array)$this->data[0]) : []);
-        
+
         // Generate worksheet
         $rows = '';
         $rowNum = 1;
@@ -232,7 +234,7 @@ class Exporter
     protected function generatePDFHTML(): string
     {
         $headers = $this->headers ?: (!empty($this->data) ? array_keys((array)$this->data[0]) : []);
-        
+
         $html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
             body { font-family: Arial, sans-serif; margin: 20px; }
             h1 { color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
@@ -271,19 +273,19 @@ class Exporter
     {
         // Simple PDF generation using FPDF-style approach
         // For production, consider using libraries like TCPDF or DomPDF
-        
+
         // This is a simplified version - in production use proper PDF library
         $pdf = "%PDF-1.4\n";
         $pdf .= "1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n";
         $pdf .= "2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n";
         $pdf .= "3 0 obj\n<< /Type /Page /Parent 2 0 R /Resources 4 0 R /MediaBox [0 0 612 792] /Contents 5 0 R >>\nendobj\n";
         $pdf .= "4 0 obj\n<< /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> >> >>\nendobj\n";
-        
+
         $content = "BT /F1 12 Tf 50 700 Td (" . strip_tags($html) . ") Tj ET";
         $pdf .= "5 0 obj\n<< /Length " . strlen($content) . " >>\nstream\n{$content}\nendstream\nendobj\n";
         $pdf .= "xref\n0 6\n0000000000 65535 f\n0000000009 00000 n\n0000000058 00000 n\n0000000115 00000 n\n0000000214 00000 n\n0000000303 00000 n\n";
         $pdf .= "trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n" . strlen($pdf) . "\n%%EOF";
-        
+
         return $pdf;
     }
 
@@ -306,7 +308,7 @@ class Exporter
     protected function downloadFile(string $filepath, string $filename): void
     {
         $extension = pathinfo($filename, PATHINFO_EXTENSION);
-        
+
         $mimeTypes = [
             'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'csv' => 'text/csv',

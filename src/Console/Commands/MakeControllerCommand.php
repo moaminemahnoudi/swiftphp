@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Console\Commands;
 
 class MakeControllerCommand
@@ -25,13 +27,13 @@ class MakeControllerCommand
         }
 
         $template = $this->getControllerTemplate($controllerName);
-        
+
         if (!is_dir('app/Controllers')) {
             mkdir('app/Controllers', 0755, true);
         }
 
         file_put_contents($controllerPath, $template);
-        
+
         echo "\033[32mController '$controllerName' created successfully!\033[0m\n";
         echo "Location: $controllerPath\n";
     }

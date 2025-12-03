@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Traits;
 
 use SwiftPHP\Auth\Tenant;
@@ -18,7 +20,7 @@ trait HasTenant
         }
 
         $results = $query->get();
-        return array_map(fn($row) => new static($row), $results);
+        return array_map(fn ($row) => new static($row), $results);
     }
 
     public static function find(int $id): ?static
@@ -50,7 +52,7 @@ trait HasTenant
         }
 
         $results = $query->get();
-        return array_map(fn($row) => new static($row), $results);
+        return array_map(fn ($row) => new static($row), $results);
     }
 
     public function save(): bool

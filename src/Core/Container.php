@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Core;
 
 class Container
@@ -38,15 +40,15 @@ class Container
     private function build(string $concrete)
     {
         $reflection = new \ReflectionClass($concrete);
-        
+
         if (!$reflection->isInstantiable()) {
             throw new \Exception("Class {$concrete} is not instantiable");
         }
 
         $constructor = $reflection->getConstructor();
-        
+
         if (!$constructor) {
-            return new $concrete;
+            return new $concrete();
         }
 
         $dependencies = [];

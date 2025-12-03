@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Core;
 
 class ModelQuery
@@ -23,14 +25,14 @@ class ModelQuery
     public function get(): array
     {
         $modelClass = get_class($this->model);
-        
+
         if (empty($this->wheres)) {
             $results = $modelClass::all();
         } else {
             $firstWhere = $this->wheres[0];
             $results = $modelClass::where($firstWhere['column'], $firstWhere['operator'], $firstWhere['value']);
         }
-        
+
         if (!empty($this->relations)) {
             foreach ($results as $result) {
                 foreach ($this->relations as $relation) {
@@ -40,7 +42,7 @@ class ModelQuery
                 }
             }
         }
-        
+
         return $results;
     }
 

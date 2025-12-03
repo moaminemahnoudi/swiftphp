@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 // Helper Functions for Authentication
 
 use SwiftPHP\Auth\Auth;

@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Error - SwiftPHP</title>
+    <title><?= htmlspecialchars($errorType) ?> - SwiftPHP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -12,488 +15,550 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-            color: #333;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            line-height: 1.6;
         }
 
-        .error-container {
-            max-width: 1200px;
+        .container {
+            max-width: 1400px;
             margin: 0 auto;
         }
 
-        .error-header {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-bottom: 1px solid #334155;
+            padding: 1.5rem 2rem;
         }
 
-        .error-icon {
-            font-size: 64px;
-            margin-bottom: 20px;
-            animation: bounce 1s ease infinite;
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .error-title {
-            font-size: 32px;
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
             font-weight: 700;
-            color: #e53e3e;
-            margin-bottom: 10px;
+            color: #f97316;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .debug-badge {
+            background: #dc2626;
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+        }
+
+        /* Error Card */
+        .error-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .error-header {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            padding: 2rem;
+            color: white;
         }
 
         .error-type {
             display: inline-block;
-            background: #fed7d7;
-            color: #c53030;
-            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.375rem 0.75rem;
             border-radius: 6px;
-            font-size: 14px;
+            font-size: 0.875rem;
             font-weight: 600;
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
         }
 
         .error-message {
-            font-size: 18px;
-            color: #4a5568;
-            line-height: 1.6;
-            padding: 20px;
-            background: #f7fafc;
-            border-radius: 8px;
-            border-left: 4px solid #e53e3e;
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 1.5rem;
         }
 
         .error-location {
-            margin-top: 15px;
-            font-size: 14px;
-            color: #718096;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            opacity: 0.9;
         }
 
-        .error-location strong {
-            color: #2d3748;
-        }
-
-        .ai-hint-container {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            border-left: 6px solid #48bb78;
-        }
-
-        .ai-hint-header {
+        .location-item {
             display: flex;
             align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
+            gap: 0.5rem;
         }
 
-        .ai-icon {
-            font-size: 48px;
-            animation: pulse 2s ease infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        .ai-hint-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #2d3748;
-        }
-
-        .ai-category {
-            display: inline-block;
-            background: #c6f6d5;
-            color: #22543d;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 12px;
+        .location-label {
             font-weight: 600;
-            margin-left: 10px;
+            min-width: 60px;
         }
 
-        .ai-section {
-            margin-bottom: 25px;
+        .location-value {
+            font-family: 'Monaco', 'Menlo', monospace;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
         }
 
-        .ai-section-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 12px;
+        /* Tabs */
+        .tabs {
             display: flex;
-            align-items: center;
-            gap: 8px;
+            background: #0f172a;
+            border-bottom: 1px solid #334155;
         }
 
-        .ai-section-icon {
-            font-size: 20px;
-        }
-
-        .ai-problem {
-            background: #fff5f5;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #fc8181;
-            color: #742a2a;
-            line-height: 1.6;
-        }
-
-        .ai-list {
-            list-style: none;
-            padding: 0;
-        }
-
-        .ai-list li {
-            padding: 10px 15px;
-            margin-bottom: 8px;
-            background: #f7fafc;
-            border-radius: 6px;
-            border-left: 3px solid #4299e1;
+        .tab {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
             transition: all 0.2s;
+            font-weight: 500;
+            color: #94a3b8;
         }
 
-        .ai-list li:hover {
-            background: #edf2f7;
-            transform: translateX(5px);
+        .tab:hover {
+            color: #e2e8f0;
+            background: #1e293b;
         }
 
-        .ai-list li::before {
-            content: "→";
-            margin-right: 10px;
-            color: #4299e1;
-            font-weight: bold;
+        .tab.active {
+            color: #f97316;
+            border-bottom-color: #f97316;
+            background: #1e293b;
         }
 
-        .quick-fixes {
-            background: #f0fff4;
-            padding: 20px;
+        .tab-content {
+            display: none;
+            padding: 2rem;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Code Snippet */
+        .code-container {
+            background: #0f172a;
+            border: 1px solid #334155;
             border-radius: 8px;
-            border: 2px solid #48bb78;
+            overflow: hidden;
         }
 
-        .quick-fixes li {
-            border-left-color: #48bb78;
+        .code-header {
+            background: #1e293b;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #334155;
+            font-size: 0.875rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            color: #94a3b8;
         }
 
-        .quick-fixes li::before {
-            content: "✓";
-            color: #48bb78;
-        }
-
-        .code-section {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-
-        .code-section-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .code-snippet {
-            background: #1a202c;
-            border-radius: 8px;
-            padding: 20px;
-            overflow-x: auto;
-            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-            font-size: 14px;
+        .code-lines {
+            padding: 1rem 0;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
             line-height: 1.6;
+            overflow-x: auto;
         }
 
         .code-line {
             display: flex;
-            gap: 15px;
-            padding: 4px 0;
+            padding: 0.25rem 1rem;
+            transition: background 0.1s;
         }
 
-        .code-line-number {
-            color: #718096;
-            user-select: none;
-            min-width: 40px;
+        .code-line:hover {
+            background: #1e293b;
+        }
+
+        .code-line.error-line {
+            background: rgba(220, 38, 38, 0.1);
+            border-left: 3px solid #dc2626;
+        }
+
+        .line-number {
+            color: #475569;
+            min-width: 50px;
             text-align: right;
+            user-select: none;
+            padding-right: 1.5rem;
         }
 
-        .code-line-content {
-            color: #e2e8f0;
-            flex: 1;
+        .error-line .line-number {
+            color: #dc2626;
+            font-weight: 600;
         }
 
-        .code-line.highlight {
-            background: rgba(229, 62, 62, 0.2);
-            border-left: 4px solid #e53e3e;
-            margin-left: -20px;
-            padding-left: 16px;
+        .line-content {
+            color: #cbd5e1;
+            white-space: pre;
         }
 
-        .code-line.highlight .code-line-number {
-            color: #fc8181;
-            font-weight: bold;
-        }
-
-        .solution-section {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-
-        .solution-card {
-            background: #f7fafc;
+        /* AI Hints */
+        .hint-card {
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
             border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-left: 4px solid #4299e1;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+
+        .hint-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .hint-icon {
+            font-size: 2rem;
+        }
+
+        .hint-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .hint-category {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+
+        .hint-section {
+            margin-top: 1.5rem;
+        }
+
+        .hint-section-title {
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hint-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .hint-list li {
+            padding: 0.5rem 0;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .hint-list li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .quick-fixes {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            padding: 1rem;
+        }
+
+        .quick-fixes li::before {
+            content: "✓";
+        }
+
+        /* Stack Trace */
+        .stack-trace {
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.8125rem;
+            line-height: 1.6;
+            overflow-x: auto;
+            color: #94a3b8;
+        }
+
+        .stack-frame {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background: #1e293b;
+            border-radius: 6px;
+            border-left: 3px solid #475569;
+        }
+
+        .stack-frame:hover {
+            border-left-color: #f97316;
+        }
+
+        .frame-location {
+            color: #f97316;
+            font-weight: 600;
+        }
+
+        .frame-file {
+            color: #94a3b8;
+            margin-top: 0.25rem;
+        }
+
+        /* Solutions */
+        .solution-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
         }
 
         .solution-title {
-            font-size: 16px;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 12px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #f97316;
         }
 
         .solution-code {
-            background: #1a202c;
-            color: #e2e8f0;
-            padding: 15px;
+            background: #0f172a;
+            border: 1px solid #334155;
             border-radius: 6px;
-            font-family: monospace;
-            font-size: 13px;
-            line-height: 1.6;
+            padding: 1rem;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
             overflow-x: auto;
+            color: #cbd5e1;
         }
 
-        .stack-trace {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        }
-
-        .stack-trace pre {
-            background: #1a202c;
-            color: #e2e8f0;
-            padding: 20px;
-            border-radius: 8px;
-            overflow-x: auto;
-            font-size: 13px;
-            line-height: 1.6;
-            font-family: monospace;
-        }
-
+        /* Footer */
         .footer {
             text-align: center;
-            color: white;
-            padding: 20px;
-            font-size: 14px;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.875rem;
         }
 
         .footer a {
-            color: white;
+            color: #f97316;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
             text-decoration: underline;
         }
 
-        .toggle-btn {
-            background: #4299e1;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.2s;
-            margin-top: 10px;
-        }
-
-        .toggle-btn:hover {
-            background: #3182ce;
-            transform: translateY(-2px);
-        }
-
-        .hidden {
-            display: none;
-        }
-
+        /* Responsive */
         @media (max-width: 768px) {
-            body {
-                padding: 10px;
+            .main-content {
+                padding: 1rem;
             }
 
-            .error-header,
-            .ai-hint-container,
-            .code-section,
-            .solution-section,
-            .stack-trace {
-                padding: 20px;
+            .error-header {
+                padding: 1.5rem;
             }
 
-            .error-title {
-                font-size: 24px;
+            .error-message {
+                font-size: 1.25rem;
             }
 
-            .ai-hint-title {
-                font-size: 20px;
+            .tabs {
+                overflow-x: auto;
+            }
+
+            .tab {
+                padding: 0.75rem 1rem;
+                white-space: nowrap;
             }
         }
     </style>
 </head>
 <body>
-    <div class="error-container">
-        <!-- Error Header -->
-        <div class="error-header">
-            <div class="error-icon">💥</div>
-            <h1 class="error-title">Oops! Something went wrong</h1>
-            <span class="error-type"><?= htmlspecialchars($errorType) ?></span>
-            
-            <div class="error-message">
-                <?= htmlspecialchars($message) ?>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon">⚡</div>
+                SwiftPHP
             </div>
-
-            <div class="error-location">
-                <strong>File:</strong> <?= htmlspecialchars($file) ?><br>
-                <strong>Line:</strong> <?= htmlspecialchars($line) ?>
-            </div>
-        </div>
-
-        <!-- AI-Powered Hint -->
-        <div class="ai-hint-container">
-            <div class="ai-hint-header">
-                <div class="ai-icon"><?= $aiHint['icon'] ?></div>
-                <div>
-                    <h2 class="ai-hint-title">
-                        <?= htmlspecialchars($aiHint['title']) ?>
-                        <span class="ai-category"><?= htmlspecialchars($aiHint['category']) ?></span>
-                    </h2>
-                    <p style="color: #718096; margin-top: 5px;">AI-powered analysis and suggestions</p>
-                </div>
-            </div>
-
-            <div class="ai-section">
-                <h3 class="ai-section-title">
-                    <span class="ai-section-icon">🔍</span>
-                    What's the Problem?
-                </h3>
-                <div class="ai-problem">
-                    <?= htmlspecialchars($aiHint['problem']) ?>
-                </div>
-            </div>
-
-            <div class="ai-section">
-                <h3 class="ai-section-title">
-                    <span class="ai-section-icon">🤔</span>
-                    Likely Causes
-                </h3>
-                <ul class="ai-list">
-                    <?php foreach ($aiHint['likely_causes'] as $cause): ?>
-                        <li><?= htmlspecialchars($cause) ?></li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-
-            <div class="ai-section">
-                <h3 class="ai-section-title">
-                    <span class="ai-section-icon">⚡</span>
-                    Quick Fixes
-                </h3>
-                <div class="quick-fixes">
-                    <ul class="ai-list">
-                        <?php foreach ($aiHint['quick_fixes'] as $fix): ?>
-                            <li><?= htmlspecialchars($fix) ?></li>
-                        <?php endforeach; ?>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Code Snippet -->
-        <?php if (!empty($codeSnippet)): ?>
-        <div class="code-section">
-            <h3 class="code-section-title">
-                <span>📝</span>
-                Code Context
-            </h3>
-            <div class="code-snippet">
-                <?php foreach ($codeSnippet as $line): ?>
-                    <div class="code-line <?= $line['highlight'] ? 'highlight' : '' ?>">
-                        <span class="code-line-number"><?= $line['line'] ?></span>
-                        <span class="code-line-content"><?= htmlspecialchars($line['code']) ?></span>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </div>
-        <?php endif; ?>
-
-        <!-- Solutions -->
-        <?php if (!empty($solution)): ?>
-        <div class="solution-section">
-            <h3 class="code-section-title">
-                <span>💡</span>
-                Suggested Solutions
-            </h3>
-            <?php foreach ($solution as $sol): ?>
-                <div class="solution-card">
-                    <div class="solution-title"><?= htmlspecialchars($sol['title']) ?></div>
-                    <pre class="solution-code"><?= htmlspecialchars($sol['code']) ?></pre>
-                </div>
-            <?php endforeach; ?>
-        </div>
-        <?php endif; ?>
-
-        <!-- Stack Trace (Collapsible) -->
-        <?php if (self::isDebugMode()): ?>
-        <div class="stack-trace">
-            <h3 class="code-section-title">
-                <span>🔬</span>
-                Stack Trace
-            </h3>
-            <button class="toggle-btn" onclick="toggleTrace()">Show Full Trace</button>
-            <pre id="traceContent" class="hidden"><?= htmlspecialchars($trace) ?></pre>
-        </div>
-        <?php endif; ?>
-
-        <!-- Footer -->
-        <div class="footer">
-            <p>SwiftPHP v2.0 - Built with ❤️ for developers</p>
-            <p><a href="https://github.com/swiftphp/framework" target="_blank">Documentation</a> • <a href="https://github.com/swiftphp/framework/issues" target="_blank">Report Issue</a></p>
+            <div class="debug-badge">Debug Mode</div>
         </div>
     </div>
 
+    <div class="container main-content">
+        <!-- Error Card -->
+        <div class="error-card">
+            <div class="error-header">
+                <div class="error-type"><?= htmlspecialchars($errorType) ?></div>
+                <div class="error-message"><?= htmlspecialchars($message) ?></div>
+                <div class="error-location">
+                    <div class="location-item">
+                        <span class="location-label">File:</span>
+                        <span class="location-value"><?= htmlspecialchars($file) ?></span>
+                    </div>
+                    <div class="location-item">
+                        <span class="location-label">Line:</span>
+                        <span class="location-value"><?= htmlspecialchars($line) ?></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab(event, 'code')">Code</div>
+                <div class="tab" onclick="switchTab(event, 'hints')">AI Hints</div>
+                <div class="tab" onclick="switchTab(event, 'solutions')">Solutions</div>
+                <div class="tab" onclick="switchTab(event, 'trace')">Stack Trace</div>
+            </div>
+
+            <!-- Code Tab -->
+            <div id="code" class="tab-content active">
+                <?php if (!empty($codeSnippet)): ?>
+                <div class="code-container">
+                    <div class="code-header"><?= htmlspecialchars($file) ?></div>
+                    <div class="code-lines">
+                        <?php foreach ($codeSnippet as $lineData): ?>
+                            <div class="code-line <?= $lineData['highlight'] ? 'error-line' : '' ?>">
+                                <span class="line-number"><?= $lineData['line'] ?></span>
+                                <span class="line-content"><?= htmlspecialchars($lineData['code']) ?></span>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php else: ?>
+                    <p style="color: #64748b;">No code snippet available.</p>
+                <?php endif; ?>
+            </div>
+
+            <!-- AI Hints Tab -->
+            <div id="hints" class="tab-content">
+                <div class="hint-card">
+                    <div class="hint-header">
+                        <div class="hint-icon"><?= $aiHint['icon'] ?></div>
+                        <div>
+                            <div class="hint-title">
+                                <?= htmlspecialchars($aiHint['title']) ?>
+                                <span class="hint-category"><?= htmlspecialchars($aiHint['category']) ?></span>
+                            </div>
+                            <div style="opacity: 0.8; font-size: 0.875rem;">AI-powered analysis</div>
+                        </div>
+                    </div>
+
+                    <div class="hint-section">
+                        <div class="hint-section-title">🔍 Problem</div>
+                        <p><?= htmlspecialchars($aiHint['problem']) ?></p>
+                    </div>
+
+                    <div class="hint-section">
+                        <div class="hint-section-title">🤔 Likely Causes</div>
+                        <ul class="hint-list">
+                            <?php foreach ($aiHint['likely_causes'] as $cause): ?>
+                                <li><?= htmlspecialchars($cause) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+
+                    <div class="hint-section">
+                        <div class="hint-section-title">⚡ Quick Fixes</div>
+                        <div class="quick-fixes">
+                            <ul class="hint-list">
+                                <?php foreach ($aiHint['quick_fixes'] as $fix): ?>
+                                    <li><?= htmlspecialchars($fix) ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Solutions Tab -->
+            <div id="solutions" class="tab-content">
+                <?php if (!empty($solution)): ?>
+                    <?php foreach ($solution as $sol): ?>
+                        <div class="solution-card">
+                            <div class="solution-title">💡 <?= htmlspecialchars($sol['title']) ?></div>
+                            <pre class="solution-code"><?= htmlspecialchars($sol['code']) ?></pre>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p style="color: #64748b;">No specific solutions available for this error.</p>
+                <?php endif; ?>
+            </div>
+
+            <!-- Stack Trace Tab -->
+            <div id="trace" class="tab-content">
+                <div class="stack-trace">
+                    <?php
+                    $traceLines = explode("\n", $trace);
+                    foreach ($traceLines as $traceLine) {
+                        if (preg_match('/#(\d+)\s+(.+)/', $traceLine, $matches)) {
+                            echo '<div class="stack-frame">';
+                            echo '<div class="frame-location">#' . htmlspecialchars($matches[1]) . '</div>';
+                            echo '<div class="frame-file">' . htmlspecialchars($matches[2]) . '</div>';
+                            echo '</div>';
+                        } else {
+                            echo '<div>' . htmlspecialchars($traceLine) . '</div>';
+                        }
+                    }
+                    ?>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>SwiftPHP Framework • <a href="https://github.com/moaminemahnoudi/swiftphp" target="_blank">Documentation</a> • <a href="https://github.com/moaminemahnoudi/swiftphp/issues" target="_blank">Report Issue</a></p>
+    </div>
+
     <script>
-        function toggleTrace() {
-            const trace = document.getElementById('traceContent');
-            const btn = event.target;
-            
-            if (trace.classList.contains('hidden')) {
-                trace.classList.remove('hidden');
-                btn.textContent = 'Hide Full Trace';
-            } else {
-                trace.classList.add('hidden');
-                btn.textContent = 'Show Full Trace';
-            }
+        function switchTab(event, tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked tab
+            event.currentTarget.classList.add('active');
         }
     </script>
 </body>

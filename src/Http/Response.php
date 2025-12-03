@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Http;
 
 class Response
@@ -43,11 +45,11 @@ class Response
     public function send(): void
     {
         http_response_code($this->statusCode);
-        
+
         foreach ($this->headers as $key => $value) {
             header("$key: $value");
         }
-        
+
         echo $this->content;
     }
 

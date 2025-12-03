@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Auth;
 
 use SwiftPHP\Core\Model;
@@ -18,7 +20,7 @@ class Auth
 
         $userClass = self::$userModel;
         $users = $userClass::where('email', '=', $email);
-        
+
         if (empty($users)) {
             return false;
         }
@@ -148,13 +150,13 @@ class Auth
         }
 
         $user = self::user();
-        
+
         if (!$user || !isset($user->permissions)) {
             return false;
         }
 
-        $permissions = is_string($user->permissions) 
-            ? json_decode($user->permissions, true) 
+        $permissions = is_string($user->permissions)
+            ? json_decode($user->permissions, true)
             : $user->permissions;
 
         return in_array($permission, $permissions ?? []);
@@ -177,7 +179,7 @@ class Auth
     public static function register(array $data): ?Model
     {
         $userClass = self::$userModel;
-        
+
         // Hash password
         if (isset($data['password'])) {
             $data['password'] = Security::hashPassword($data['password']);
@@ -189,7 +191,7 @@ class Auth
         }
 
         $user = new $userClass($data);
-        
+
         if ($user->save()) {
             self::login($user);
             return $user;

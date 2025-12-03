@@ -1,4 +1,5 @@
 <?php
+
 // database/migrations/2024_01_01_000001_add_auth_fields_to_users_table.php
 
 class AddAuthFieldsToUsersTable
@@ -6,7 +7,7 @@ class AddAuthFieldsToUsersTable
     public function up(): void
     {
         $db = \SwiftPHP\Database\Database::getInstance();
-        
+
         // Add role, tenant_id, and permissions columns
         $db->query("
             ALTER TABLE users 
@@ -21,7 +22,7 @@ class AddAuthFieldsToUsersTable
     public function down(): void
     {
         $db = \SwiftPHP\Database\Database::getInstance();
-        
+
         $db->query("
             ALTER TABLE users 
             DROP COLUMN role,

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Traits;
 
 trait HasRoles
@@ -8,7 +10,7 @@ trait HasRoles
     {
         $roles = is_array($roles) ? $roles : [$roles];
         $userRole = $this->attributes['role'] ?? 'user';
-        
+
         return in_array($userRole, $roles);
     }
 
@@ -25,7 +27,7 @@ trait HasRoles
     public function can(string $permission): bool
     {
         $permissions = $this->attributes['permissions'] ?? [];
-        
+
         if (is_string($permissions)) {
             $permissions = json_decode($permissions, true) ?? [];
         }
@@ -36,7 +38,7 @@ trait HasRoles
     public function grantPermission(string $permission): void
     {
         $permissions = $this->attributes['permissions'] ?? [];
-        
+
         if (is_string($permissions)) {
             $permissions = json_decode($permissions, true) ?? [];
         }
@@ -50,12 +52,12 @@ trait HasRoles
     public function revokePermission(string $permission): void
     {
         $permissions = $this->attributes['permissions'] ?? [];
-        
+
         if (is_string($permissions)) {
             $permissions = json_decode($permissions, true) ?? [];
         }
 
-        $permissions = array_filter($permissions, fn($p) => $p !== $permission);
+        $permissions = array_filter($permissions, fn ($p) => $p !== $permission);
         $this->attributes['permissions'] = json_encode(array_values($permissions));
     }
 }

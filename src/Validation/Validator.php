@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Validation;
 
 class Validator
@@ -189,7 +191,7 @@ class Validator
     {
         $beforeDate = strtotime($params[0]);
         $fieldDate = strtotime($value);
-        
+
         if (!empty($value) && $fieldDate >= $beforeDate) {
             $this->addError($field, "The {$field} must be a date before {$params[0]}.");
         }
@@ -199,7 +201,7 @@ class Validator
     {
         $afterDate = strtotime($params[0]);
         $fieldDate = strtotime($value);
-        
+
         if (!empty($value) && $fieldDate <= $afterDate) {
             $this->addError($field, "The {$field} must be a date after {$params[0]}.");
         }

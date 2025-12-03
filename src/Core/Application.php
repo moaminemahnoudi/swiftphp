@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Core;
 
 use SwiftPHP\Error\ErrorHandler;
@@ -14,7 +16,7 @@ class Application
     {
         // Register error handler with AI hints
         ErrorHandler::register();
-        
+
         $this->container = new Container();
         $this->router = new Router($this->container);
         $this->loadConfig();

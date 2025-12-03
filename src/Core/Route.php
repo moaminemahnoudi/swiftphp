@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Core;
 
 class Route
@@ -64,13 +66,13 @@ class Route
     private static function addRoute(string $method, string $path, $handler): void
     {
         $groupAttributes = self::mergeGroupAttributes();
-        
+
         if (!empty($groupAttributes['prefix'])) {
             $path = '/' . trim($groupAttributes['prefix'], '/') . '/' . trim($path, '/');
         }
 
         $middleware = $groupAttributes['middleware'] ?? [];
-        
+
         self::$router->addRoute($method, $path, $handler, $middleware);
     }
 

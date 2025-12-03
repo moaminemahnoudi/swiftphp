@@ -1,4 +1,5 @@
 <?php
+
 // database/migrations/2024_01_01_000002_create_tenants_table.php
 
 class CreateTenantsTable
@@ -6,7 +7,7 @@ class CreateTenantsTable
     public function up(): void
     {
         $db = \SwiftPHP\Database\Database::getInstance();
-        
+
         $db->query("
             CREATE TABLE IF NOT EXISTS tenants (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,

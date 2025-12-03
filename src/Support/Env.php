@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Support;
 
 class Env
@@ -14,13 +16,13 @@ class Env
         }
 
         $envFile = rtrim($path, '/') . '/.env';
-        
+
         if (!file_exists($envFile)) {
             return;
         }
 
         $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        
+
         foreach ($lines as $line) {
             // Skip comments
             if (strpos(trim($line), '#') === 0) {
@@ -32,12 +34,12 @@ class Env
                 [$key, $value] = explode('=', $line, 2);
                 $key = trim($key);
                 $value = trim($value);
-                
+
                 // Remove quotes
                 $value = trim($value, '"\'');
-                
+
                 self::$values[$key] = $value;
-                
+
                 // Also set in $_ENV and putenv
                 $_ENV[$key] = $value;
                 putenv("$key=$value");
@@ -53,18 +55,18 @@ class Env
         if (isset(self::$values[$key])) {
             return self::parseValue(self::$values[$key]);
         }
-        
+
         // Check $_ENV
         if (isset($_ENV[$key])) {
             return self::parseValue($_ENV[$key]);
         }
-        
+
         // Check getenv
         $value = getenv($key);
         if ($value !== false) {
             return self::parseValue($value);
         }
-        
+
         return $default;
     }
 
@@ -73,19 +75,19 @@ class Env
         if ($value === 'true' || $value === '(true)') {
             return true;
         }
-        
+
         if ($value === 'false' || $value === '(false)') {
             return false;
         }
-        
+
         if ($value === 'null' || $value === '(null)') {
             return null;
         }
-        
+
         if (is_numeric($value)) {
             return strpos($value, '.') !== false ? (float) $value : (int) $value;
         }
-        
+
         return $value;
     }
 }

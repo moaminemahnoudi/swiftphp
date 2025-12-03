@@ -7,7 +7,8 @@ use SwiftPHP\Traits\{HasRoles, HasTenant};
 
 class User extends Model
 {
-    use HasRoles, HasTenant;
+    use HasRoles;
+    use HasTenant;
 
     protected string $table = 'users';
     protected array $fillable = ['name', 'email', 'password', 'role', 'tenant_id', 'permissions'];

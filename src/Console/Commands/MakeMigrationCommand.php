@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Console\Commands;
 
 class MakeMigrationCommand
@@ -23,7 +25,7 @@ class MakeMigrationCommand
 
         $template = $this->getMigrationTemplate($migrationName);
         file_put_contents($migrationPath, $template);
-        
+
         echo "\033[32mMigration '$fileName' created successfully!\033[0m\n";
         echo "Location: $migrationPath\n";
     }
@@ -31,7 +33,7 @@ class MakeMigrationCommand
     private function getMigrationTemplate(string $name): string
     {
         $className = $this->getMigrationClassName($name);
-        
+
         return "<?php
 
 class $className

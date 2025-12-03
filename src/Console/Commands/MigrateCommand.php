@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Console\Commands;
 
 use SwiftPHP\Database\Database;
@@ -47,20 +49,20 @@ class MigrateCommand
 
         foreach ($migrationFiles as $file) {
             $migration = basename($file, '.php');
-            
+
             if (in_array($migration, $executedMigrations)) {
                 continue;
             }
 
             echo "Migrating: $migration\n";
-            
+
             require_once $file;
             $className = $this->getMigrationClassName($migration);
-            
+
             if (class_exists($className)) {
                 $migrationInstance = new $className();
                 $migrationInstance->up();
-                
+
                 $db->table('migrations')->insert(['migration' => $migration]);
                 echo "\033[32mMigrated: $migration\033[0m\n";
             }

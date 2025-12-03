@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Core;
 
 class Router
@@ -11,6 +13,7 @@ class Router
     public function __construct(Container $container)
     {
         $this->container = $container;
+        Route::setRouter($this); // initialize static reference safely
     }
 
     public function addRoute(string $method, string $path, $handler, array $middleware = []): void
@@ -24,7 +27,7 @@ class Router
     public function dispatch(string $method, string $uri): string
     {
         $path = parse_url($uri, PHP_URL_PATH);
-        
+
         if (isset($this->routes[$method][$path])) {
             $route = $this->routes[$method][$path];
             return $this->executeRoute($route, []);
@@ -44,7 +47,7 @@ class Router
     private function executeRoute(array $route, array $params): string
     {
         $response = $this->callHandler($route['handler'], $params);
-        
+
         // Apply middleware
         foreach (array_reverse($route['middleware']) as $middlewareClass) {
             $middleware = $this->container->resolve($middlewareClass);
@@ -52,7 +55,7 @@ class Router
                 $response = $middleware->handle($response);
             }
         }
-        
+
         return $response;
     }
 
@@ -60,12 +63,12 @@ class Router
     {
         $routePattern = preg_replace('/\{([^}]+)\}/', '([^/]+)', $route);
         $routePattern = '#^' . $routePattern . '$#';
-        
+
         if (preg_match($routePattern, $path, $matches)) {
             array_shift($matches);
             return $matches;
         }
-        
+
         return false;
     }
 

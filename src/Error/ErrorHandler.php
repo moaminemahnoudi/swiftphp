@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Error;
 
 use Throwable;
 
 /**
  * SwiftPHP Error Handler with AI-Powered Hints
- * 
+ *
  * Provides detailed error pages with intelligent suggestions
  * for common issues and their solutions
  */
@@ -20,7 +22,7 @@ class ErrorHandler
      */
     public static function register(): void
     {
-        if (self::$registered) {
+        if (self::$registered || getenv('APP_ENV') === 'testing') {
             return;
         }
 
@@ -91,7 +93,7 @@ class ErrorHandler
 
         $logFile = $logDir . '/error_' . date('Y-m-d') . '.log';
         $timestamp = date('Y-m-d H:i:s');
-        
+
         $logMessage = sprintf(
             "[%s] %s: %s in %s:%d\nStack trace:\n%s\n\n",
             $timestamp,
@@ -118,7 +120,7 @@ class ErrorHandler
      */
     protected static function isAjaxRequest(): bool
     {
-        return !empty($_SERVER['HTTP_X_REQUESTED_WITH']) 
+        return !empty($_SERVER['HTTP_X_REQUESTED_WITH'])
             && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
     }
 
@@ -152,13 +154,13 @@ class ErrorHandler
     protected static function renderHtmlError(Throwable $exception): void
     {
         http_response_code(500);
-        
+
         $errorType = get_class($exception);
         $message = $exception->getMessage();
         $file = $exception->getFile();
         $line = $exception->getLine();
         $trace = $exception->getTraceAsString();
-        
+
         $aiHint = self::getAIHint($exception);
         $codeSnippet = self::getCodeSnippet($file, $line);
         $solution = self::getSolution($exception);
@@ -248,7 +250,7 @@ class ErrorHandler
         if (stripos($message, 'Undefined variable') !== false) {
             preg_match('/Undefined variable[:\s]+\$?(\w+)/', $message, $matches);
             $varName = $matches[1] ?? 'unknown';
-            
+
             return [
                 'category' => 'Variable',
                 'icon' => '❓',
@@ -274,7 +276,7 @@ class ErrorHandler
             preg_match('/Call to undefined method (.+?)::(\w+)/', $message, $matches);
             $class = $matches[1] ?? 'Unknown';
             $method = $matches[2] ?? 'unknown';
-            
+
             return [
                 'category' => 'Method',
                 'icon' => '⚙️',

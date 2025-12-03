@@ -5,6 +5,24 @@ All notable changes to SwiftPHP will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-12-03
+
+### Added
+- 🧪 Automated Testing Suite - Added PHPUnit integration with Unit and Feature tests
+- 🔍 Static Analysis - Added PHPStan level 5 integration for code quality
+- 👷 CI/CD - Added GitHub Actions workflow for automated testing
+- 📚 Documentation - Added Architecture Overview and Getting Started guides
+- 🛡️ Security - Enhanced CSRF protection and input sanitization tests
+- 📝 Example - Added Task CRUD example with controller, model, and migration
+- 🎯 Code Quality - Added `declare(strict_types=1)` to all core files
+- 🏗️ Architecture - Created interface contracts for Repository and Cache
+- 📋 Standards - Added code quality documentation and pre-commit checklist
+
+### Fixed
+- 🐛 Router - Fixed dependency injection in Router constructor
+- 🔧 Error Handler - Improved testability by respecting APP_ENV
+- 🎨 Error Page - Redesigned with modern dark theme inspired by Laravel Ignition
+
 ## [1.0.0] - 2024-12-02
 
 ### Added

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Console\Commands;
 
 class NewCommand
@@ -62,16 +64,16 @@ class NewCommand
     private function copyFrameworkFiles(string $path): void
     {
         $frameworkPath = __DIR__ . '/../../..';
-        
+
         // Copy core files
         $this->copyDirectory($frameworkPath . '/src', $path . '/src');
         $this->copyDirectory($frameworkPath . '/config', $path . '/config');
         $this->copyDirectory($frameworkPath . '/resources', $path . '/resources');
         $this->copyDirectory($frameworkPath . '/bin', $path . '/bin');
-        
+
         // Copy public/index.php
         copy($frameworkPath . '/public/index.php', $path . '/public/index.php');
-        
+
         // Copy example files
         if (file_exists($frameworkPath . '/app/Controllers/UserController.php')) {
             copy($frameworkPath . '/app/Controllers/UserController.php', $path . '/app/Controllers/UserController.php');
@@ -83,8 +85,10 @@ class NewCommand
 
     private function copyDirectory(string $src, string $dst): void
     {
-        if (!is_dir($src)) return;
-        
+        if (!is_dir($src)) {
+            return;
+        }
+
         if (!is_dir($dst)) {
             mkdir($dst, 0755, true);
         }
@@ -94,7 +98,7 @@ class NewCommand
             if ($file != '.' && $file != '..') {
                 $srcFile = $src . DIRECTORY_SEPARATOR . $file;
                 $dstFile = $dst . DIRECTORY_SEPARATOR . $file;
-                
+
                 if (is_dir($srcFile)) {
                     $this->copyDirectory($srcFile, $dstFile);
                 } else {

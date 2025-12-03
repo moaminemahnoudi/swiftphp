@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 // Helper Functions for SwiftPHP Framework
 
+use SwiftPHP\Http\Response;
 use SwiftPHP\Support\Collection;
 use SwiftPHP\Support\Env;
-use SwiftPHP\Http\Response;
 
 if (!function_exists('env')) {
     function env(string $key, $default = null)

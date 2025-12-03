@@ -85,6 +85,16 @@ php -S localhost:8000 -t public
 
 ---
 
+## Documentation
+
+- [Getting Started](docs/getting-started.md)
+- [Architecture Overview](docs/architecture.md)
+- [Best Practices](docs/best-practices.md)
+- [Code Quality Standards](docs/code-quality.md)
+- [FAQ](docs/faq.md)
+
+---
+
 ## Project Structure
 
 ```

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SwiftPHP\Core;
 
 use SwiftPHP\Database\Database;
@@ -26,7 +28,7 @@ abstract class Model
             ->table($instance->table)
             ->where($instance->primaryKey, '=', $id)
             ->first();
-            
+
         return $result ? new static($result) : null;
     }
 
@@ -36,8 +38,8 @@ abstract class Model
         $results = Database::getInstance()
             ->table($instance->table)
             ->get();
-            
-        return array_map(fn($row) => new static($row), $results);
+
+        return array_map(fn ($row) => new static($row), $results);
     }
 
     public static function where(string $column, string $operator, $value): array
@@ -47,15 +49,15 @@ abstract class Model
             ->table($instance->table)
             ->where($column, $operator, $value)
             ->get();
-            
-        return array_map(fn($row) => new static($row), $results);
+
+        return array_map(fn ($row) => new static($row), $results);
     }
 
     public function hasMany(string $related, string $foreignKey = null, string $localKey = null): array
     {
         $foreignKey = $foreignKey ?? strtolower(basename(str_replace('\\', '/', static::class))) . '_id';
         $localKey = $localKey ?? $this->primaryKey;
-        
+
         return $related::where($foreignKey, '=', $this->attributes[$localKey]);
     }
 
@@ -63,11 +65,11 @@ abstract class Model
     {
         $foreignKey = $foreignKey ?? strtolower(basename(str_replace('\\', '/', $related))) . '_id';
         $ownerKey = $ownerKey ?? 'id';
-        
+
         if (!isset($this->attributes[$foreignKey])) {
             return null;
         }
-        
+
         return $related::find($this->attributes[$foreignKey]);
     }
 
@@ -75,7 +77,7 @@ abstract class Model
     {
         $foreignKey = $foreignKey ?? strtolower(basename(str_replace('\\', '/', static::class))) . '_id';
         $localKey = $localKey ?? $this->primaryKey;
-        
+
         $results = $related::where($foreignKey, '=', $this->attributes[$localKey]);
         return $results[0] ?? null;
     }
@@ -88,7 +90,7 @@ abstract class Model
     public function save(): bool
     {
         $data = array_intersect_key($this->attributes, array_flip($this->fillable));
-        
+
         if (isset($this->attributes[$this->primaryKey])) {
             return Database::getInstance()
                 ->table($this->table)
@@ -106,7 +108,7 @@ abstract class Model
         if (!isset($this->attributes[$this->primaryKey])) {
             return false;
         }
-        
+
         return Database::getInstance()
             ->table($this->table)
             ->where($this->primaryKey, '=', $this->attributes[$this->primaryKey])
